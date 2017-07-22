@@ -12,10 +12,10 @@
     (try (formative.parse/parse-params this (:values this))
          (catch Exception e nil)))
   (errors [this] (:problems this))
-  (prepare [this values]
+  (validate [this values]
     (let [f (-> this
                 map->FormativeForm
-                (update :values merge values))]
+                (assoc :values values))]
       (assoc f :problems (formative.parse/with-fallback identity
                            (formative.parse/parse-params f (:values f))
                            nil)))))

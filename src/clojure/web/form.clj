@@ -3,4 +3,4 @@
 (defprotocol Form
   (clean-data [this])
   (errors [this])
-  (prepare [this values]))
+  (validate [this values]))
