@@ -3,6 +3,13 @@
             [clojure.web.form :refer [Form]]
             hiccup.compiler))
 
+(defrecord FormativeField []
+  hiccup.compiler/HtmlRenderer
+  (render-html [this]
+    (-> this
+        (formative.core/render-field (:value this))
+        hiccup.compiler/render-html)))
+
 (defrecord FormativeForm []
   hiccup.compiler/HtmlRenderer
   (render-html [this]
@@ -18,4 +25,11 @@
                 (assoc :values values))]
       (assoc f :problems (formative.parse/with-fallback identity
                            (formative.parse/parse-params f (:values f))
-                           nil)))))
+                           nil))))
+  (get-field [this field-name]
+    (->> this
+         formative.core/prep-form
+         second
+         (filter (comp #{(name field-name)} :name))
+         first
+         map->FormativeField)))
