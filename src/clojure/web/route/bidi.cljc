@@ -3,8 +3,9 @@
             [bidi.bidi :as bidi]))
 
 (extend-protocol route/Route
-  clojure.lang.Keyword
-  (route/url-for
-    ([this] (#'route/url-for this {}))
+  #?(:clj clojure.lang.Keyword
+     :cljs cljs.core.Keyword)
+  (url-for
+    ([this] (route/url-for this {}))
     ([this args] (bidi/unmatch-pair (route/routes-for :root)
                                     {:handler this :params args}))))
